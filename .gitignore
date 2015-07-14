@@ -35,3 +35,6 @@ derby.log
 bin
 *.orig
 out.log
+
+#annoying mac-only problem
+**/.DS_Store
