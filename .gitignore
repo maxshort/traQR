@@ -36,4 +36,5 @@ bin
 *.orig
 out.log
 
-.DS_Store #annoying mac-only problem
+#annoying mac-only problem
+**/.DS_Store
