@@ -14,11 +14,11 @@ import com.google.zxing.common.BitMatrix;
  * @author Chris Bartz (CB042580)
  */
 public class qrGenerator {
+	public final static String OUTPUT_FOLDER = System.getProperty("user.home");
+	public final static String IMAGE_FORMAT = "JPG";
+
 	private static final BarcodeFormat DEFAULT_BARCODE = BarcodeFormat.QR_CODE;
-	private final static String BASE_URL = "//servername/?=";
-	private final static String OUTPUT_FOLDER = System.getProperty("user.home"); // Some
-																					// directory
-	private final static String IMAGE_FORMAT = "PNG";
+	private final static String BASE_URL = "http://servername/?=";
 	private final static int width = 300;
 	private final static int height = 300;
 
@@ -31,17 +31,17 @@ public class qrGenerator {
 	 * {@code //servername/?="[imageId]"}. The file is saved to the user's home
 	 * directory as "[imageId].png".
 	 * 
-	 * @param imageId
+	 * @param locationID
 	 *            The ID number of the QR code to generate.
 	 * @throws Exception
 	 *             On any error.
 	 */
-	public static void createQR(int imageId) throws Exception {
+	public static void createQR(int locationID) throws Exception {
 
-		String idString = Integer.toString(imageId);
+		String idString = Integer.toString(locationID);
 
 		String contents = BASE_URL + "\"" + idString + "\"";
-		String outFileString = OUTPUT_FOLDER + File.separator + idString + ".png";
+		String outFileString = OUTPUT_FOLDER + File.separator + idString + "." + IMAGE_FORMAT.toLowerCase();
 
 		BitMatrix matrix = new MultiFormatWriter().encode(contents, DEFAULT_BARCODE, width, height);
 		MatrixToImageWriter.writeToPath(matrix, IMAGE_FORMAT, Paths.get(outFileString));

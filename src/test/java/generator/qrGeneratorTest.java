@@ -2,12 +2,12 @@ package generator;
 
 public class qrGeneratorTest {
 	public static void main(String args[]) {
-		int imageId = 0;
+		int locationID = 0;
 		try {
-			qrGenerator.createQR(imageId);
-		}
-		catch (Exception e) {
+			qrGenerator.createQR(locationID);
+			pdfGenerator.createPDF("New Location", locationID);
+		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 }
