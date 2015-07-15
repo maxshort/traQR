@@ -1,22 +1,20 @@
 <html>
 
 <body>
-<h1> Hello world! </h1>
+<h1> Welcome to traQR! </h1>
 <h2> The current time is: ${time}</h2>
 
-<h3>Primary Colors</h3>
+<h3>Directions Template</h3>
 
 <table>
-    <#list colors as color>
-        <tr> <td>${color}</td> </tr>
+    <#list nodes as node>
+        <tr><td>${node}</td><td>${direction}</td></tr>
     <#else>
-        No Colors!!!
+        No Directions Available.
 
     </#list>
 
 </table>
-
-<p>Name: ${person.name} <BR> Age:${person.age} </p>
 
 </body>
 

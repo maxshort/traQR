@@ -59,14 +59,14 @@ public class Main {
 
         public static void process(Writer out) throws IOException, TemplateException {
             Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-            config.setDirectoryForTemplateLoading(new File("/Users/ms035644/Documents/traqr/src/main/resources"));
+            config.setDirectoryForTemplateLoading(new File("C:\\Users\\Easy\\Documents\\GitHub\\traQR\\src\\main\\resources"));
             config.setDefaultEncoding("UTF-8");
             config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
             Map<String, Object> root = new HashMap<>();
             root.put("time", LocalDateTime.now());
-            root.put("colors", Arrays.asList("Red", "Yellow", "Blue"));
-            root.put("person", new Person("bob", 42));
+            root.put("node", Arrays.asList("A", "B", "C"));
+            root.put("direction", Arrays.asList("Head North 40 feet","Turn left, walk 10 feet","Walk around the corner"));
 
             Template template = config.getTemplate("test.ftl");
 
