@@ -9,11 +9,11 @@ public class Connection {
 
     private int id; //user does not see
     private String description;
-    private ConnectedLocation start;
-    private ConnectedLocation end;
+    private Location start;
+    private Location end;
     private Duration estimatedTime;
 
-    public Connection(int id, String description, ConnectedLocation start, ConnectedLocation end, Duration estimatedTime) {
+    public Connection(int id, String description, Location start, Location end, Duration estimatedTime) {
         this.id = id;
         this.description = description;
         this.start = start;
@@ -29,15 +29,19 @@ public class Connection {
         return description;
     }
 
-    public ConnectedLocation getStart() {
+    public Location getStart() {
         return start;
     }
 
-    public ConnectedLocation getEnd() {
+    public Location getEnd() {
         return end;
     }
 
     public Duration getEstimatedTime() {
         return estimatedTime;
+    }
+
+    public String toString() {
+        return "CONNECTION {"+"Start: " + start + "end: " +end +"}-DURATION:"+estimatedTime;
     }
 }

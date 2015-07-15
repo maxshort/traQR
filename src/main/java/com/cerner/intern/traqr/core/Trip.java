@@ -32,6 +32,9 @@ public class Trip {
                                     (Duration initial, Duration latest) -> initial.plus(latest)));
         }
         return estimatedDuration.get();
+    }
 
+    public String toString() {
+        return connectionList.toString() + "COST: "+getEstimatedTime();
     }
 }
