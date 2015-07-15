@@ -7,8 +7,8 @@
 <h3>Directions Template</h3>
 
 <table>
-    <#list nodes as node>
-        <tr><td>${node}</td><td>${direction}</td></tr>
+    <#list trip.connections as Connection>
+        <tr><td>${Connection.description}</td><td>${Connection.estimatedTime}</td></tr>
     <#else>
         No Directions Available.
 
