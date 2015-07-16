@@ -63,7 +63,7 @@ public class Main {
 
         public static void process(Writer out) throws IOException, TemplateException {
             Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-            config.setDirectoryForTemplateLoading(new File("C:\\Users\\FG032640\\Documents\\GitHub\\traQR\\src\\main\\resources"));
+            config.setDirectoryForTemplateLoading(new File("C:\\Users\\Easy\\Documents\\GitHub\\traQR\\src\\main\\resources"));
             config.setDefaultEncoding("UTF-8");
             config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
