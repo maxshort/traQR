@@ -2,16 +2,17 @@ package com.cerner.intern.traqr.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cerner.intern.traqr.core.ConnectedLocation;
 import com.cerner.intern.traqr.core.Location;
 
 /**
@@ -50,6 +51,7 @@ public class Database {
                         " PREV   INT    NOT NULL," +
                         " NEXT   INT    NOT NULL," +
                         " DESCRIPTION TEXT NOT NULL," +
+                        " DURATION    INT  NOT NULL," +
                         " PRIMARY KEY(PREV, NEXT))";
                 statementConnection.executeUpdate(sql);
             }
@@ -106,5 +108,65 @@ public class Database {
             }
         }
         return successful;
+    }
+
+    public static List<Location> getLocationsById(final Set<Long> ids) throws SQLException {
+        if (ids.isEmpty()) {
+            throw new IllegalArgumentException("Ids cannot be empty.");
+        }
+        final StringBuilder stringBuilder = new StringBuilder(128);
+        ids.forEach(aLong -> {
+            if (aLong != null) {
+                stringBuilder.append(aLong + ", ");
+            }
+        });
+        // Delete trailing comma and space
+        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+        System.out.println(stringBuilder.toString());
+        final List<Location> locations = new ArrayList<>();
+        String sql = String.format("SELECT ID, NAME FROM LOCATION WHERE ID IN (%s);", stringBuilder.toString());
+        try (final Connection sqlConnection = getConnectionOrRetry()) {
+            try (final Statement statement = sqlConnection.createStatement()) {
+                try (final ResultSet rs = statement.executeQuery(sql)) {
+                    while (rs.next()) {
+                        final Location location = new Location(rs.getInt(1), rs.getString(2));
+                        locations.add(location);
+                    }
+                }
+            }
+        }
+        return locations;
+    }
+
+    public static List<com.cerner.intern.traqr.core.Connection> getConnectionsByStartLocation(final Location location) throws SQLException {
+        if (location == null) {
+            throw new IllegalArgumentException("Location cannot be null.");
+        }
+        final List<com.cerner.intern.traqr.core.Connection> connections = new ArrayList<>();
+        String sql = String.format("SELECT PREV, NEXT, DESCRIPTION FROM CONNECTION WHERE PREV = %d;", location.getId());
+        try (final Connection sqlConnection = getConnectionOrRetry()) {
+            try (final Statement statement = sqlConnection.createStatement()) {
+                try (final ResultSet rs = statement.executeQuery(sql)) {
+//                    while (rs.next()) {
+//                        final com.cerner.intern.traqr.core.Connection connection = new com.cerner.intern.traqr.core.Connection(rs.getInt(1), rs.getString(3), rs.getInt(1), rs.getInt(2), 0);
+//                        connections.add(connection);
+//                    }
+                }
+            }
+        }
+        return connections;
+    }
+
+    public static void main(String args[]) throws SQLException {
+        createTables();
+        insertLocation(new Location(234, "foobah"));
+        insertLocation(new Location(235, "borg"));
+        Set<Long> ids = new HashSet<>(2);
+        ids.add(234L);
+        ids.add(235L);
+        List<Location> locations = getLocationsById(ids);
+        locations.forEach(aConsumer -> {
+            System.out.println(aConsumer.getId() + " " + aConsumer.getName());
+        });
     }
 }
