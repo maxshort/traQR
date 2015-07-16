@@ -35,7 +35,10 @@ public class pdfGenerator {
 		// Text:
 		TextObject line1 = new TextObject("Need some directions?", page, PDType1Font.HELVETICA_BOLD_OBLIQUE, 42);
 		TextObject line2 = new TextObject("Just ask the new interns!", page, PDType1Font.HELVETICA_BOLD, 50);
-		TextObject line3 = new TextObject("TraQR (A project of #CernerHackfest2015)", page,
+
+		TextObject line3 = new TextObject("You are at: " + locationName, page, PDType1Font.HELVETICA_BOLD_OBLIQUE, 22);
+
+		TextObject line4 = new TextObject("TraQR (A project of #CernerHackfest2015)", page,
 				PDType1Font.HELVETICA_BOLD_OBLIQUE, 22);
 
 		// QR code:
@@ -50,7 +53,8 @@ public class pdfGenerator {
 		// Write lines.
 		writeLine(contentStream, line1, 1, 8);
 		writeLine(contentStream, line2, 1, 4);
-		writeLine(contentStream, line3, 7, 8);
+		writeLine(contentStream, line3, 25, 32);
+		writeLine(contentStream, line4, 7, 8);
 
 		// Close text stream
 
