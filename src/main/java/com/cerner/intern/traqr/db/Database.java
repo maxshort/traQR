@@ -2,13 +2,13 @@ package com.cerner.intern.traqr.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +23,7 @@ import com.cerner.intern.traqr.core.Location;
  */
 public class Database {
     private static final Logger LOGGER = LoggerFactory.getLogger(Database.class);
+    private static final String LAST_INSERT_ROWID = "SELECT last_insert_rowid();";
     private static Connection connection;
     static {
         try {
@@ -44,18 +45,18 @@ public class Database {
         try (final Connection connection = getConnectionOrRetry()) {
             try (final Statement statementLocation = connection.createStatement()) {
                 String sql = "CREATE TABLE LOCATION (" +
-                        " ID   INT PRIMARY KEY      NOT NULL," +
+                        " ID   INTEGER PRIMARY KEY AUTOINCREMENT," +
                         " NAME          TEXT        NOT NULL," +
                         " QR_CODE_PATH  CHAR(80))";
                 statementLocation.executeUpdate(sql);
             }
             try (final Statement statementConnection = connection.createStatement()) {
                 String sql = "CREATE TABLE CONNECTION (" +
-                        " PREV   INT    NOT NULL," +
-                        " NEXT   INT    NOT NULL," +
+                        " PREV   INTEGER    NOT NULL," +
+                        " NEXT   INTEGER    NOT NULL," +
                         " DESCRIPTION TEXT NOT NULL," +
-                        " DURATION    INT  NOT NULL," +
-                        " ID INT PRIMARY KEY NOT NULL)";
+                        " DURATION    INTEGER  NOT NULL," +
+                        " ID INTEGER PRIMARY KEY AUTOINCREMENT)";
                 statementConnection.executeUpdate(sql);
             }
         } catch (SQLException e) {
@@ -78,40 +79,55 @@ public class Database {
 
     /**
      * Inserts a new location into the database.
-     * @param location the {@link Location} to insert. Should not be null.
-     * @return true if the insert was successful, false otherwise.
+     * @param name the name of the location to insert. Should not be null.
+     * @return the {@link Location}.
      * @throws SQLException when something goes wrong with the INSERT operation.
      */
-    public static boolean insertLocation(final Location location) throws SQLException {
+    public static Location insertLocation(final String name) throws SQLException {
         boolean successful = false;
         try (final Connection connection = getConnectionOrRetry()) {
             try (final Statement statement = connection.createStatement()) {
-                String sql = String.format("INSERT INTO LOCATION (ID,NAME,QR_CODE_PATH)" +
-                        " VALUES (%d, '%s', '%s');", location.getId(), location.getName(), "dummy"); // TODO use actual url
+                String sql = String.format("INSERT INTO LOCATION (NAME,QR_CODE_PATH)" +
+                        " VALUES ('%s', '%s');", name, "dummy"); // TODO use actual url
                 successful = statement.execute(sql);
             }
+            try (final PreparedStatement stmt = connection.prepareStatement(LAST_INSERT_ROWID)) {
+                try (final ResultSet rs = stmt.executeQuery()) {
+                    rs.next();
+                    int lastInsertRowId = rs.getInt(1);
+                    return new Location(lastInsertRowId, name);
+                }
+            }
         }
-        return successful;
     }
 
     /**
-     * Inserts a new connection into the database.
-     * @param connection the {@link com.cerner.intern.traqr.core.Connection} to insert. Should not be null.
-     * @return true if the insert was successful, false otherwise.
+     * Inserts a new connection.
+     * @param description
+     * @param start
+     * @param end
+     * @param estimatedTime
+     * @return the {@link com.cerner.intern.traqr.core.Connection}.
      * @throws SQLException when something goes wrong with the INSERT operation.
      */
-    public static boolean insertConnection(final com.cerner.intern.traqr.core.Connection connection) throws SQLException {
+    public static com.cerner.intern.traqr.core.Connection insertConnection(String description, Location start, Location end, Duration estimatedTime) throws SQLException {
         boolean successful = false;
         try (final Connection sqlConnection = getConnectionOrRetry()) {
             try (final Statement statement = sqlConnection.createStatement()) {
-                String sql = String.format("INSERT INTO CONNECTION (PREV,NEXT,DESCRIPTION,DURATION,ID)" +
-                        " VALUES (%d, %d, '%s', %d, %d);", connection.getStart().getId(), connection.getEnd().getId(),
-                        connection.getDescription(), connection.getEstimatedTime().toMillis(), connection.getId());
+                String sql = String.format("INSERT INTO CONNECTION (PREV,NEXT,DESCRIPTION,DURATION)" +
+                                " VALUES (%d, %d, '%s', %d);", start.getId(), end.getId(),
+                        description, estimatedTime.toMillis());
                 System.out.println(sql);
                 successful = statement.execute(sql);
             }
+            try (final PreparedStatement stmt = connection.prepareStatement(LAST_INSERT_ROWID)) {
+                try (final ResultSet rs = stmt.executeQuery()) {
+                    rs.next();
+                    int lastInsertRowId = rs.getInt(1);
+                    return new com.cerner.intern.traqr.core.Connection(lastInsertRowId, description, start, end, estimatedTime);
+                }
+            }
         }
-        return successful;
     }
 
     public static Map<Integer, Location> getAllLocationsById() {
@@ -145,7 +161,6 @@ public class Database {
         });
         // Delete trailing comma and space
         stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-        System.out.println(stringBuilder.toString());
         String sql = String.format("SELECT ID, NAME FROM LOCATION WHERE ID IN (%s);", stringBuilder.toString());
         return getLocationsByQuery(sql);
     }
@@ -207,17 +222,15 @@ public class Database {
 
     public static void main(String args[]) throws SQLException {
         createTables();
-        insertLocation(new Location(234, "foobah"));
-        insertLocation(new Location(235, "borg"));
-        Set<Long> ids = new HashSet<>(2);
-        ids.add(234L);
-        ids.add(235L);
-        Collection<Location> locations = getLocationsById(ids).values();
+        System.out.println(insertLocation("foobah"));
+        System.out.println(insertLocation("borg"));
+
+        Collection<Location> locations = getAllLocationsById().values();
         locations.forEach(aConsumer -> {
             System.out.println(aConsumer.getId() + " " + aConsumer.getName());
         });
         Iterator<Location> iterator = locations.iterator();
-        insertConnection(new com.cerner.intern.traqr.core.Connection(2340, "I am a description.", iterator.next(), iterator.next(), Duration.ofMinutes(10)));
+        System.out.println(insertConnection("I am a description.", iterator.next(), iterator.next(), Duration.ofMinutes(10)));
         Collection<com.cerner.intern.traqr.core.Connection> connections = getAllConnectionsById().values();
         connections.forEach(aConnection -> {
             System.out.println(aConnection.getId() + " " + aConnection.getStart() + " " + aConnection.getEnd() + " " + aConnection.getDescription() + " " + aConnection.getEstimatedTime());
