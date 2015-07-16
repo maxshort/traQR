@@ -38,3 +38,6 @@ out.log
 
 #annoying mac-only problem
 **/.DS_Store
+
+#SQLite
+*.db
