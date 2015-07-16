@@ -1,6 +1,9 @@
 package com.cerner.intern.traqr;
 
 import com.cerner.intern.traqr.servlets.DirectionsServlet;
+import com.cerner.intern.traqr.core.Connection;
+import com.cerner.intern.traqr.core.Location;
+import com.cerner.intern.traqr.core.Trip;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -21,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -78,7 +82,17 @@ public class Main {
             root.put("time", LocalDateTime.now());
             root.put("node", Arrays.asList("A", "B", "C"));
             root.put("direction", Arrays.asList("Head North 40 feet","Turn left, walk 10 feet","Walk around the corner"));
-
+            
+            Location nodeA = new Location(1, "nodeA");
+            Location nodeB = new Location(2, "nodeB");
+            Location nodeC = new Location(3, "nodeC");
+            Connection connAB = new Connection(1, "Head North 40 feet", nodeA, nodeB, Duration.ofMinutes(2));
+            Connection connBC = new Connection(1, "Turn left, walk 10 feet", nodeB, nodeC, Duration.ofMinutes(1));
+            
+            Trip testTrip = new Trip(Arrays.asList(connAB, connBC));
+            
+            root.put("trip", testTrip);
+            
             Template template = config.getTemplate("test.ftl");
 
             template.process(root, out);
