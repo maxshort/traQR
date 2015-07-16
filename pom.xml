@@ -34,6 +34,16 @@
             <artifactId>jetty-client</artifactId>
             <version>9.3.0.v20150612</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox-examples</artifactId>
+            <version>1.8.9</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -50,6 +60,4 @@
         </plugins>
     </build>
 
-
-    
 </project>
