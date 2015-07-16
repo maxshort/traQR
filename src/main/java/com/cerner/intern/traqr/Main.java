@@ -1,23 +1,27 @@
 package com.cerner.intern.traqr;
 
+import com.cerner.intern.traqr.servlets.DirectionsServlet;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import org.eclipse.jetty.client.HttpRequest;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,19 +40,26 @@ public class Main {
 
         server.setConnectors(new Connector[]{connector});
 
-        server.setHandler(new HelloHandler());
+        ServletContextHandler context = new ServletContextHandler();
+        context.setContextPath("/");
+        server.setHandler(context);
+
+        context.addServlet(new ServletHolder(new HelloServlet()), "/*");
+        context.addServlet(new ServletHolder(new DirectionsServlet(null)), "/directions/*");
+        
+
+        //contextHandler.server.setHandler(new HelloServlet());
 
         server.start();
         server.join();
     }
 
-    public static class HelloHandler extends AbstractHandler {
+    public static class HelloServlet extends HttpServlet {
 
-        public void handle(String s, Request request, HttpServletRequest httpServletRequest,
+        public void doGet(HttpServletRequest httpServletRequest,
                 HttpServletResponse httpServletResponse) throws IOException, ServletException {
             httpServletResponse.setContentType("text/html;charset=utf-8");
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-            request.setHandled(true);
 
             try {
                 process(httpServletResponse.getWriter());
@@ -59,7 +70,7 @@ public class Main {
 
         public static void process(Writer out) throws IOException, TemplateException {
             Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-            config.setDirectoryForTemplateLoading(new File("C:\\Users\\Easy\\Documents\\GitHub\\traQR\\src\\main\\resources"));
+            config.setDirectoryForTemplateLoading(new File("/Users/ms035644/Documents/traqr/src/main/resources/"));
             config.setDefaultEncoding("UTF-8");
             config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
