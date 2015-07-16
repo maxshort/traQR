@@ -14,7 +14,7 @@ import com.google.zxing.common.BitMatrix;
  * @author Chris Bartz (CB042580)
  */
 public class qrGenerator {
-	public final static String OUTPUT_FOLDER = System.getProperty("user.home");
+	public final static String OUTPUT_FOLDER = System.getProperty("java.io.tmpdir");
 	public final static String IMAGE_FORMAT = "JPG";
 
 	private static final BarcodeFormat DEFAULT_BARCODE = BarcodeFormat.QR_CODE;
@@ -36,7 +36,7 @@ public class qrGenerator {
 	 * @throws Exception
 	 *             On any error.
 	 */
-	public static void createQR(int locationID) throws Exception {
+	public static File createQR(int locationID) throws Exception {
 
 		String idString = Integer.toString(locationID);
 
@@ -45,6 +45,6 @@ public class qrGenerator {
 
 		BitMatrix matrix = new MultiFormatWriter().encode(contents, DEFAULT_BARCODE, width, height);
 		MatrixToImageWriter.writeToPath(matrix, IMAGE_FORMAT, Paths.get(outFileString));
-		System.out.println("Image saved to " + outFileString + ".");
+		return new File(outFileString);
 	}
 }

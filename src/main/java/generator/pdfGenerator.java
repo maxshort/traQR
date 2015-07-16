@@ -14,18 +14,18 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.xobject.PDJpeg;
 
 public class pdfGenerator {
-	private final static String OUTPUT_FOLDER = System.getProperty("user.home");
+	private final static String OUTPUT_FOLDER = System.getProperty("java.io.tmpdir");
 
 	private pdfGenerator() {
 	}
 
-	public static void createPDF(String locationName, int locationID) throws IOException, COSVisitorException {
+	public static File createPDF(String locationName, int locationID) throws Exception {
 		pdfGenerator generator = new pdfGenerator();
-		generator.PDFgenerator(locationName, locationID);
+		return generator.PDFgenerator(locationName, locationID);
 	}
 
-	private void PDFgenerator(String locationName, int locationID) throws IOException, COSVisitorException {
-		String fileLocationString = OUTPUT_FOLDER + File.separator + Integer.toString(locationID);
+	private File PDFgenerator(String locationName, int locationID) throws Exception {
+		String fileLocationString = qrGenerator.createQR(locationID).getAbsolutePath(); //OUTPUT_FOLDER + File.separator + Integer.toString(locationID);
 
 		PDDocument document = new PDDocument();
 		PDPage page = new PDPage(PDPage.PAGE_SIZE_LETTER);
@@ -42,7 +42,7 @@ public class pdfGenerator {
 				PDType1Font.HELVETICA_BOLD_OBLIQUE, 22);
 
 		// QR code:
-		InputStream in = new FileInputStream(new File(fileLocationString + ".jpg"));
+		InputStream in = new FileInputStream(new File(fileLocationString));
 		PDJpeg img = new PDJpeg(document, in);
 		float imgX = centerOnPageX(page, img.getWidth());
 		float imgY = centerOnPageY(page, img.getHeight());
@@ -61,7 +61,9 @@ public class pdfGenerator {
 		contentStream.drawImage(img, imgX, imgY);
 		contentStream.close();
 
-		document.save(fileLocationString + ".pdf");
+		File toSave = new File(fileLocationString.substring(0, fileLocationString.length()-4) + ".pdf");
+		document.save(toSave);
+		return toSave;
 	}
 
 	static void writeLine(PDPageContentStream contentStream, TextObject t) throws IOException {

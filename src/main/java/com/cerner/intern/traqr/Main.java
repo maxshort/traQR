@@ -4,6 +4,7 @@ import com.cerner.intern.traqr.servlets.DirectionsServlet;
 import com.cerner.intern.traqr.core.Connection;
 import com.cerner.intern.traqr.core.Location;
 import com.cerner.intern.traqr.core.Trip;
+import com.cerner.intern.traqr.servlets.QRServlet;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -48,8 +49,12 @@ public class Main {
         context.setContextPath("/");
         server.setHandler(context);
 
+        Map<Integer, Location> test = new HashMap<>();
+        test.put(1, new Location(1, "A LOCATION"));
+
         context.addServlet(new ServletHolder(new HelloServlet()), "/*");
-        context.addServlet(new ServletHolder(new DirectionsServlet(null)), "/directions/*");
+        context.addServlet(new ServletHolder(new DirectionsServlet(test)), "/directions/*");
+        context.addServlet(new ServletHolder(new QRServlet(test)), "/qr/*");
         
 
         //contextHandler.server.setHandler(new HelloServlet());
