@@ -87,10 +87,10 @@ public class Database {
         boolean successful = false;
         try (final Connection connection = getConnectionOrRetry()) {
             try (final PreparedStatement statement = connection.prepareStatement(
-                    String.format("INSERT INTO LOCATION (NAME,QR_CODE_PATH)" +
-                            " VALUES ('%s', '%s');", name, "dummy" // TODO Use actual url
-            ))) {
-                successful = statement.execute();
+                    "INSERT INTO LOCATION (NAME,QR_CODE_PATH) VALUES (?, ?);")) {
+                statement.setString(1, name);
+                statement.setString(2, "dummy"); // TODO use actual url
+                statement.execute();
             }
             try (final PreparedStatement stmt = connection.prepareStatement(LAST_INSERT_ROWID)) {
                 try (final ResultSet rs = stmt.executeQuery()) {
@@ -115,9 +115,12 @@ public class Database {
         boolean successful = false;
         try (final Connection sqlConnection = getConnectionOrRetry()) {
             try (final PreparedStatement statement = sqlConnection.prepareStatement(String.format("INSERT INTO CONNECTION (PREV,NEXT,DESCRIPTION,DURATION)" +
-                            " VALUES (%d, %d, '%s', %d);", start.getId(), end.getId(),
-                    description, estimatedTime.toMillis()))) {
-                successful = statement.execute();
+                            " VALUES (?, ?, ?, ?);"))) {
+                statement.setInt(1, start.getId());
+                statement.setInt(2, end.getId());
+                statement.setString(3, description);
+                statement.setInt(4, (int)estimatedTime.toMillis());
+                statement.execute();
             }
             try (final PreparedStatement stmt = connection.prepareStatement(LAST_INSERT_ROWID)) {
                 try (final ResultSet rs = stmt.executeQuery()) {
@@ -177,7 +180,7 @@ public class Database {
         });
         // Delete trailing comma and space
         stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-        String sql = String.format("SELECT PREV, NEXT, DESCRIPTION, DURATION, ID FROM CONNECTION WHERE PREV in (%d);", stringBuilder.toString());
+        String sql = String.format("SELECT PREV, NEXT, DESCRIPTION, DURATION, ID FROM CONNECTION WHERE PREV in (%s);", stringBuilder.toString());
         return getConnectionsByQuery(sql, locations);
     }
 
@@ -229,7 +232,7 @@ public class Database {
             System.out.println(aConsumer.getId() + " " + aConsumer.getName());
         });
         Iterator<Location> iterator = locations.iterator();
-        System.out.println(insertConnection("I am a description.", iterator.next(), iterator.next(), Duration.ofMinutes(10)));
+        System.out.println(insertConnection("I'm a description.", iterator.next(), iterator.next(), Duration.ofMinutes(10)));
         Collection<com.cerner.intern.traqr.core.Connection> connections = getAllConnectionsById().values();
         connections.forEach(aConnection -> {
             System.out.println(aConnection.getId() + " " + aConnection.getStart() + " " + aConnection.getEnd() + " " + aConnection.getDescription() + " " + aConnection.getEstimatedTime());
