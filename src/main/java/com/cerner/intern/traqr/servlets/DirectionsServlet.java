@@ -54,7 +54,7 @@ public class DirectionsServlet extends HttpServlet{
 
     public static void process(Writer out, Trip trip, Location start, Location end) throws IOException, TemplateException {
         Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-        config.setDirectoryForTemplateLoading(new File("/Users/ms035644/Documents/traqr/src/main/resources/"));
+        config.setDirectoryForTemplateLoading(new File(System.getProperty("user.home") + "/Documents/GitHub/traqr/src/main/resources/"));
         config.setDefaultEncoding("UTF-8");
         config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 

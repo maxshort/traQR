@@ -4,11 +4,20 @@ import com.cerner.intern.traqr.core.Connection;
 import com.cerner.intern.traqr.core.Location;
 import com.cerner.intern.traqr.db.Database;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -22,6 +31,27 @@ public class UploadConnectionServlet extends HttpServlet {
     public UploadConnectionServlet(Map<Integer, Location> locations, Map<Integer, Connection> connections) {
         this.locations = locations;
         this.connections = connections;
+    }
+    
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    	Configuration config = new Configuration(Configuration.VERSION_2_3_22);
+        config.setDirectoryForTemplateLoading(new File(System.getProperty("user.home") + "/Documents/GitHub/traqr/src/main/resources/"));
+        config.setDefaultEncoding("UTF-8");
+        config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        
+        Template template = config.getTemplate("addConnection.ftl");
+        
+        Map<String, Object> root = new HashMap<>();
+        root.put("locations", locations.values());
+        
+        try {
+			template.process(root, response.getWriter());
+		} catch (TemplateException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+        
     }
 
     @Override
