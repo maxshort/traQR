@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -41,10 +42,10 @@ public class Main {
 
 
     public static void main(String[] args) throws Exception {
-        Server server = new Server(8080);
+        Server server = new Server(new InetSocketAddress("0.0.0.0", 8080));
 
         ServerConnector connector = new ServerConnector(server);
-        connector.setHost("127.0.0.1");
+        //connector.setHost("127.0.0.1");
         connector.setPort(8080);
 
         server.setConnectors(new Connector[]{connector});
