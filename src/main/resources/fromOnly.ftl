@@ -1,6 +1,7 @@
 <html>
 
 <body>
+	<#include "/menu.ftl">
     <h1>Select Destination</h1>
 
     <form action = "/directions">

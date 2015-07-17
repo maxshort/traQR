@@ -8,6 +8,7 @@
 	</style>
 	
 	<body>
+		<#include "/menu.ftl">
 		<form method="POST" action="/locations">
 			<label for="name">What is the name of your location?</label>	
 			<br>

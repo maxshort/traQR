@@ -8,6 +8,7 @@
 	</style>
 	
 	<body>
+		<#include "/menu.ftl">
 		<h2>All locations:<h2>
 		<table>
 			<#list locations as Location>
