@@ -1,111 +1,91 @@
 package com.cerner.intern.traqr;
 
-import com.cerner.intern.traqr.core.GraphBuilder;
-import com.cerner.intern.traqr.db.Database;
-import com.cerner.intern.traqr.servlets.DirectionsServlet;
-import com.cerner.intern.traqr.core.Connection;
-import com.cerner.intern.traqr.core.Location;
-import com.cerner.intern.traqr.core.Trip;
-import com.cerner.intern.traqr.servlets.QRServlet;
-import com.cerner.intern.traqr.servlets.UploadConnectionServlet;
-import com.cerner.intern.traqr.servlets.UploadLocationServlet;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
+import java.net.InetSocketAddress;
+import java.util.Map;
+
+import javax.servlet.http.HttpServlet;
+
 import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
-import java.net.InetSocketAddress;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import com.cerner.intern.traqr.core.Connection;
+import com.cerner.intern.traqr.core.GraphBuilder;
+import com.cerner.intern.traqr.core.Location;
+import com.cerner.intern.traqr.db.Database;
+import com.cerner.intern.traqr.servlets.DirectionsServlet;
+import com.cerner.intern.traqr.servlets.QRServlet;
+import com.cerner.intern.traqr.servlets.UploadConnectionServlet;
+import com.cerner.intern.traqr.servlets.UploadLocationServlet;
 
 /**
  * Created on 7/14/15.
  */
 public class Main {
 
+	public static void main(String[] args) throws Exception {
+		Server server = new Server(new InetSocketAddress("0.0.0.0", 8080));
 
-    public static void main(String[] args) throws Exception {
-        Server server = new Server(new InetSocketAddress("0.0.0.0", 8080));
+		ServerConnector connector = new ServerConnector(server);
+		// connector.setHost("127.0.0.1");
+		connector.setPort(8080);
 
-        ServerConnector connector = new ServerConnector(server);
-        //connector.setHost("127.0.0.1");
-        connector.setPort(8080);
+		server.setConnectors(new Connector[] { connector });
 
-        server.setConnectors(new Connector[]{connector});
+		ServletContextHandler context = new ServletContextHandler();
+		context.setContextPath("/");
+		server.setHandler(context);
 
-        ServletContextHandler context = new ServletContextHandler();
-        context.setContextPath("/");
-        server.setHandler(context);
+		Map<Integer, Location> locations = Database.getAllLocationsById();
+		Map<Integer, Connection> connections = Database.getAllConnectionsById();
 
-        Map<Integer, Location> locations = Database.getAllLocationsById();
-        Map<Integer, Connection> connections = Database.getAllConnectionsById();
+		GraphBuilder.buildGraph(locations, connections);
 
-        GraphBuilder.buildGraph(locations, connections);
+		context.addServlet(new ServletHolder(new HelloServlet()), "/*");
+		context.addServlet(new ServletHolder(new DirectionsServlet(locations)), "/directions/*");
+		context.addServlet(new ServletHolder(new QRServlet(locations)), "/qr/*");
+		context.addServlet(new ServletHolder(new UploadConnectionServlet(locations, connections)), "/connections/*");
+		context.addServlet(new ServletHolder(new UploadLocationServlet(locations)), "/locations/*");
 
+		// contextHandler.server.setHandler(new HelloServlet());
 
-        context.addServlet(new ServletHolder(new HelloServlet()), "/*");
-        context.addServlet(new ServletHolder(new DirectionsServlet(locations)), "/directions/*");
-        context.addServlet(new ServletHolder(new QRServlet(locations)), "/qr/*");
-        context.addServlet(new ServletHolder(new UploadConnectionServlet(locations, connections)),"/connections/*");
-        context.addServlet(new ServletHolder(new UploadLocationServlet(locations)), "/locations/*");
-        
+		server.start();
+		server.join();
+	}
 
-        //contextHandler.server.setHandler(new HelloServlet());
+	public static class HelloServlet extends HttpServlet {
 
-        server.start();
-        server.join();
-    }
+		/*
+		 * public void doGet(HttpServletRequest httpServletRequest,
+		 * HttpServletResponse httpServletResponse) throws IOException,
+		 * ServletException {
+		 * httpServletResponse.setContentType("text/html;charset=utf-8");
+		 * httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+		 * 
+		 * try { process(httpServletResponse.getWriter()); } catch
+		 * (TemplateException e) { e.printStackTrace(); } }
+		 */
 
-    public static class HelloServlet extends HttpServlet {
+	}
 
-        /*public void doGet(HttpServletRequest httpServletRequest,
-                HttpServletResponse httpServletResponse) throws IOException, ServletException {
-            httpServletResponse.setContentType("text/html;charset=utf-8");
-            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+	public static class Person {
+		private String name;
+		private int age;
 
-            try {
-                process(httpServletResponse.getWriter());
-            } catch (TemplateException e) {
-                e.printStackTrace();
-            }
-        }*/
+		public Person(String name, int age) {
+			this.name = name;
+			this.age = age;
+		}
 
+		public String getName() {
+			return name;
+		}
 
-    }
-
-    public static class Person {
-        private String name;
-        private int age;
-
-        public Person(String name, int age) {
-            this.name = name;
-            this.age =age;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getAge() {
-            return age;
-        }
-    }
+		public int getAge() {
+			return age;
+		}
+	}
 
 }

@@ -9,8 +9,17 @@
 	
 	<body>
 		<h2>All locations:<h2>
-        <#list locations as Location>
-			<a href="/qr/?location=${Location.id}">${Location.name}</a>
-		</#list>
+		<table>
+			<#list locations as Location>
+				<tr>
+					<td>
+						${Location.id}
+					</td>
+					<td>
+						<a href="/qr/?location=${Location.id}">${Location.name}</a>
+					</td>
+				</tr>
+			</#list>
+		</table>
 	</body>
 </html
