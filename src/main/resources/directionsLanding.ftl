@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Connect two locations</title>
+		<title>Get directions</title>
 	</head>
 	<style>
 		form {

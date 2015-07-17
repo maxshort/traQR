@@ -1,9 +1,14 @@
 package com.cerner.intern.traqr;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -19,6 +24,11 @@ import com.cerner.intern.traqr.servlets.DirectionsServlet;
 import com.cerner.intern.traqr.servlets.QRServlet;
 import com.cerner.intern.traqr.servlets.UploadConnectionServlet;
 import com.cerner.intern.traqr.servlets.UploadLocationServlet;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 
 /**
  * Created on 7/14/15.
@@ -57,16 +67,30 @@ public class Main {
 
 	public static class HelloServlet extends HttpServlet {
 
-		/*
-		 * public void doGet(HttpServletRequest httpServletRequest,
-		 * HttpServletResponse httpServletResponse) throws IOException,
-		 * ServletException {
-		 * httpServletResponse.setContentType("text/html;charset=utf-8");
-		 * httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-		 * 
-		 * try { process(httpServletResponse.getWriter()); } catch
-		 * (TemplateException e) { e.printStackTrace(); } }
-		 */
+		@Override
+		public void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+				throws IOException, ServletException {
+			httpServletResponse.setContentType("text/html;charset=utf-8");
+			httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+
+			Configuration config = new Configuration(Configuration.VERSION_2_3_22);
+
+			// Code for grabbing template from stream
+			config.setClassForTemplateLoading(this.getClass(), "/");
+			config.setDefaultEncoding("UTF-8");
+			config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+
+			Template template = config.getTemplate("home.ftl");
+			Map<String, Object> input = new HashMap<String, Object>();
+			input.put("title", "Welcome to TraQR");
+
+			try {
+				template.process(input, httpServletResponse.getWriter());
+			} catch (TemplateException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		}
 
 	}
 

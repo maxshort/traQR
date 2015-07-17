@@ -1,7 +1,6 @@
 <html>
 
 <body>
-<h1> Welcome to traQR! </h1>
 <#include "/menu.ftl">
 
 <h3>Directions for trip from ${tripStart.name} to ${tripEnd.name}</h3>
