@@ -1,5 +1,6 @@
 package com.cerner.intern.traqr.servlets;
 
+import com.cerner.intern.traqr.Main;
 import com.cerner.intern.traqr.core.Location;
 import com.cerner.intern.traqr.core.PathFinder;
 import com.cerner.intern.traqr.core.Trip;
@@ -67,7 +68,7 @@ public class DirectionsServlet extends HttpServlet{
 
     public static void process(Writer out, Trip trip, Location start, Location end) throws IOException, TemplateException {
         Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-        config.setDirectoryForTemplateLoading(new File(System.getProperty("user.home") + "/Documents/GitHub/traqr/src/main/resources/"));
+        config.setClassForTemplateLoading(Main.class, "/");
         config.setDefaultEncoding("UTF-8");
         config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
@@ -93,7 +94,7 @@ public class DirectionsServlet extends HttpServlet{
 
     public static void processFromOnly(Writer out, Location start, List<Location> locationsWithoutStart) throws IOException, TemplateException {
         Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-        config.setDirectoryForTemplateLoading(new File("/Users/ms035644/Documents/traqr/src/main/resources/"));
+        config.setClassForTemplateLoading(Main.class, "/");
         config.setDefaultEncoding("UTF-8");
         config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
@@ -101,10 +102,6 @@ public class DirectionsServlet extends HttpServlet{
         root.put("tripStart", start);
 
         root.put("locationsWithoutStart", locationsWithoutStart);
-
-        config.setDirectoryForTemplateLoading(new File("/Users/ms035644/Documents/traqr/src/main/resources/"));
-        config.setDefaultEncoding("UTF-8") ;
-        config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
         Template template = config.getTemplate("fromOnly.ftl");
         template.process(root, out);

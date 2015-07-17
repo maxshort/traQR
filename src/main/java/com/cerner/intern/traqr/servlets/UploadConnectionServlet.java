@@ -13,8 +13,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.HashMap;
@@ -36,8 +40,10 @@ public class UploadConnectionServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
     	Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-        config.setDirectoryForTemplateLoading(new File(System.getProperty("user.home") + "/Documents/GitHub/traqr/src/main/resources/"));
-        config.setDefaultEncoding("UTF-8");
+    	
+    	//Code for grabbing template from stream
+        config.setClassForTemplateLoading(this.getClass(), "/");
+    	config.setDefaultEncoding("UTF-8");
         config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         
         Template template = config.getTemplate("addConnection.ftl");
