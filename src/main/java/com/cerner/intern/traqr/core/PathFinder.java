@@ -1,5 +1,8 @@
 package com.cerner.intern.traqr.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.Duration;
 import java.util.*;
 
@@ -7,6 +10,8 @@ import java.util.*;
  * Created on 7/14/15.
  */
 public class PathFinder {
+
+    private static Logger logger = LoggerFactory.getLogger(PathFinder.class);
 
     public static Trip findPath(Location start, Location end) {
         Map<Location, Duration> minDurations = new HashMap<>();
@@ -18,15 +23,20 @@ public class PathFinder {
         queue.add(start);
         while (!queue.isEmpty()) {
             Location location = queue.poll();
+            logger.info("Connections HERE, above for = "+location.connections);
             for (Connection connection:location.connections) {
                 Duration timeToLocation = minDurations.get(location);
                 Duration currentBestTimeToEnd = minDurations.get(connection.getEnd());
 
                 //if we don't have a current best time or we can beat it
                 if (currentBestTimeToEnd == null || timeToLocation.plus(connection.getEstimatedTime()).compareTo(currentBestTimeToEnd) <0) {
+                    logger.info("I RAN = "+currentBestTimeToEnd);
                     minDurations.put(connection.getEnd(), timeToLocation.plus(connection.getEstimatedTime()));
                     previousInShortest.put(connection.getEnd(), connection);
                     queue.add(connection.getEnd()); //TODO: need to sort this out so we don't cast
+                }
+                else {
+                    logger.info("DID NOT RUN"+currentBestTimeToEnd);
                 }
 
             }
@@ -37,9 +47,12 @@ public class PathFinder {
 
 
     public static Trip extractPath(Location start, Location end, Map<Location, Connection> previousInShortest) {
+        logger.info("END: "+end);
+        logger.info("PREVIOUS IN SHORTEST: "+ previousInShortest);
         List<Connection> reversedPath = new ArrayList<>(); //(Note that start and end are _not_ reversed w/i individual connections.
         Connection currentCon = previousInShortest.get(end);
         reversedPath.add(currentCon);
+        logger.info("REVERSED PATH: "+reversedPath);
         while ((currentCon=previousInShortest.get(currentCon.getStart())) != null) {
             reversedPath.add(currentCon);
         }

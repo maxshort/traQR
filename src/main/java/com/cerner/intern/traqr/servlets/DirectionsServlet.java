@@ -27,9 +27,8 @@ public class DirectionsServlet extends HttpServlet{
 
         if (request.getParameter("to") != null) {
             int toId = Integer.parseInt(request.getParameter("to"));
-            //TODO: Give directions instead
             Trip trip = PathFinder.findPath(locations.get(fromId), locations.get(toId));
-            response.getWriter().write("<h1>FROM:"+fromId+"TO:"+toId);
+            response.getWriter().write(trip.toString());
 
         }
         else {

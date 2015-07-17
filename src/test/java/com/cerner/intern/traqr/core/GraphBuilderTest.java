@@ -5,7 +5,9 @@ import org.junit.Test;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,18 +24,23 @@ public class GraphBuilderTest {
         Location c = new Location(3, "Place c");
         Location d = new Location(4, "Place d");
 
-        List<Location> locations = Arrays.asList(a, b, c, d);
+        List<Location> locationsList = Arrays.asList(a, b, c, d);
+        Map<Integer, Location> locations = new HashMap<>();
+        locationsList.forEach(l->locations.put(l.getId(), l));
+
 
         Connection aToB = new Connection(1, "A to B", a, b, Duration.ofMinutes(1));
         Connection bToC = new Connection(2, "B to C", b, c, Duration.ofMinutes(2));
         Connection cToD = new Connection(3, "C to D", c, d, Duration.ofMinutes(3));
         Connection aToD = new Connection(4, "A to D", a, d, Duration.ofMinutes(4));
 
-        List<Connection> connections = Arrays.asList(aToB, bToC, cToD, aToD);
+        List<Connection> connectionsList = Arrays.asList(aToB, bToC, cToD, aToD);
+        Map<Integer, Connection> connections = new HashMap<>();
+        connectionsList.forEach(con->connections.put(con.getId(), con));
 
         GraphBuilder.buildGraph(locations, connections);
 
-        Trip trip = PathFinder.findPath(locations.get(0), locations.get(2));
+        Trip trip = PathFinder.findPath(locations.get(1), locations.get(3));
         assertEquals(a, trip.getConnections().get(0).getStart());
         assertEquals(c, trip.getConnections().get(1).getEnd());
         assertEquals(2, trip.getConnections().size());
@@ -49,7 +56,9 @@ public class GraphBuilderTest {
         Location f = new Location(5, "f");
         Location t = new Location(6, "t");
 
-        List<Location> locations = Arrays.asList(s, a, b, c, f, t);
+        List<Location> locationsList = Arrays.asList(s, a, b, c, f, t);
+        Map<Integer, Location> locations = new HashMap<>();
+        locationsList.forEach(l->locations.put(l.getId(), l));
 
         Connection sToA = new Connection(1, "description", s, a, Duration.ofMinutes(3));
         Connection sToB = new Connection(2, "description", s, b, Duration.ofMinutes(4));
@@ -61,7 +70,9 @@ public class GraphBuilderTest {
         Connection cToT = new Connection(8, "description", c, t, Duration.ofMinutes(8));
         Connection fToT = new Connection(9, "description", f, t, Duration.ofMinutes(4));
 
-        List<Connection> connections = Arrays.asList(sToA, sToB, aToB, aToC, aTof, bToF, cToF, cToT, fToT);
+        List<Connection> connectionsList = Arrays.asList(sToA, sToB, aToB, aToC, aTof, bToF, cToF, cToT, fToT);
+        Map<Integer, Connection> connections = new HashMap<>();
+        connectionsList.forEach(con->connections.put(con.getId(), con));
 
         GraphBuilder.buildGraph(locations, connections);
 

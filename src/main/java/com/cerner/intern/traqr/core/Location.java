@@ -26,6 +26,6 @@ public class Location {
     }
 
     public String toString() {
-        return "name: " + getName() + ", id: " + getId();
+        return "name: " + getName() + ", id: " + getId() + "# CONNECTIONS: "+connections.size();
     }
 }

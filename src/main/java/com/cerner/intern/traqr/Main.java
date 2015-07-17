@@ -1,10 +1,14 @@
 package com.cerner.intern.traqr;
 
+import com.cerner.intern.traqr.core.GraphBuilder;
+import com.cerner.intern.traqr.db.Database;
 import com.cerner.intern.traqr.servlets.DirectionsServlet;
 import com.cerner.intern.traqr.core.Connection;
 import com.cerner.intern.traqr.core.Location;
 import com.cerner.intern.traqr.core.Trip;
 import com.cerner.intern.traqr.servlets.QRServlet;
+import com.cerner.intern.traqr.servlets.UploadConnectionServlet;
+import com.cerner.intern.traqr.servlets.UploadLocationServlet;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -35,6 +39,7 @@ import java.util.Map;
  */
 public class Main {
 
+
     public static void main(String[] args) throws Exception {
         Server server = new Server(8080);
 
@@ -48,12 +53,17 @@ public class Main {
         context.setContextPath("/");
         server.setHandler(context);
 
-        Map<Integer, Location> test = new HashMap<>();
-        test.put(1, new Location(1, "A LOCATION"));
+        Map<Integer, Location> locations = Database.getAllLocationsById();
+        Map<Integer, Connection> connections = Database.getAllConnectionsById();
+
+        GraphBuilder.buildGraph(locations, connections);
+
 
         context.addServlet(new ServletHolder(new HelloServlet()), "/*");
-        context.addServlet(new ServletHolder(new DirectionsServlet(test)), "/directions/*");
-        context.addServlet(new ServletHolder(new QRServlet(test)), "/qr/*");
+        context.addServlet(new ServletHolder(new DirectionsServlet(locations)), "/directions/*");
+        context.addServlet(new ServletHolder(new QRServlet(locations)), "/qr/*");
+        context.addServlet(new ServletHolder(new UploadConnectionServlet(locations, connections)),"/connections/*");
+        context.addServlet(new ServletHolder(new UploadLocationServlet(locations)), "/locations/*");
         
 
         //contextHandler.server.setHandler(new HelloServlet());
