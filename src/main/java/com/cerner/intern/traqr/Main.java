@@ -74,7 +74,7 @@ public class Main {
 
     public static class HelloServlet extends HttpServlet {
 
-        public void doGet(HttpServletRequest httpServletRequest,
+        /*public void doGet(HttpServletRequest httpServletRequest,
                 HttpServletResponse httpServletResponse) throws IOException, ServletException {
             httpServletResponse.setContentType("text/html;charset=utf-8");
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
@@ -84,33 +84,9 @@ public class Main {
             } catch (TemplateException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
-        public static void process(Writer out) throws IOException, TemplateException {
-            Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-            config.setDirectoryForTemplateLoading(new File("/Users/ms035644/Documents/traqr/src/main/resources/"));
-            config.setDefaultEncoding("UTF-8");
-            config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
-            Map<String, Object> root = new HashMap<>();
-            root.put("time", LocalDateTime.now());
-            root.put("node", Arrays.asList("A", "B", "C"));
-            root.put("direction", Arrays.asList("Head North 40 feet","Turn left, walk 10 feet","Walk around the corner"));
-            
-            Location nodeA = new Location(1, "nodeA");
-            Location nodeB = new Location(2, "nodeB");
-            Location nodeC = new Location(3, "nodeC");
-            Connection connAB = new Connection(1, "Head North 40 feet", nodeA, nodeB, Duration.ofMinutes(2));
-            Connection connBC = new Connection(1, "Turn left, walk 10 feet", nodeB, nodeC, Duration.ofMinutes(1));
-            
-            Trip testTrip = new Trip(Arrays.asList(connAB, connBC));
-            
-            root.put("trip", testTrip);
-            
-            Template template = config.getTemplate("test.ftl");
-
-            template.process(root, out);
-        }
     }
 
     public static class Person {
