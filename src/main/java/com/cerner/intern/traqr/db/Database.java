@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,21 +42,22 @@ public class Database {
      */
     public static void createTables() {
         try (final Connection connection = getConnectionOrRetry()) {
-            try (final Statement statementLocation = connection.createStatement()) {
-                String sql = "CREATE TABLE LOCATION (" +
-                        " ID   INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        " NAME          TEXT        NOT NULL," +
-                        " QR_CODE_PATH  CHAR(80))";
-                statementLocation.executeUpdate(sql);
+            try (final PreparedStatement statementLocation = connection.prepareStatement(
+                    "CREATE TABLE LOCATION (" +
+                    " ID   INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " NAME          TEXT        NOT NULL," +
+                    " QR_CODE_PATH  CHAR(80))"
+            )) {
+                statementLocation.execute();
             }
-            try (final Statement statementConnection = connection.createStatement()) {
-                String sql = "CREATE TABLE CONNECTION (" +
-                        " PREV   INTEGER    NOT NULL," +
-                        " NEXT   INTEGER    NOT NULL," +
-                        " DESCRIPTION TEXT NOT NULL," +
-                        " DURATION    INTEGER  NOT NULL," +
-                        " ID INTEGER PRIMARY KEY AUTOINCREMENT)";
-                statementConnection.executeUpdate(sql);
+            try (final PreparedStatement statementConnection = connection.prepareStatement(
+                    "CREATE TABLE CONNECTION (" +
+                    " PREV   INTEGER    NOT NULL," +
+                    " NEXT   INTEGER    NOT NULL," +
+                    " DESCRIPTION TEXT NOT NULL," +
+                    " DURATION    INTEGER  NOT NULL," +
+                    " ID INTEGER PRIMARY KEY AUTOINCREMENT)")) {
+                statementConnection.executeUpdate();
             }
         } catch (SQLException e) {
             LOGGER.warn("Tables already exist or error creating table.", e);
@@ -86,10 +86,11 @@ public class Database {
     public static Location insertLocation(final String name) throws SQLException {
         boolean successful = false;
         try (final Connection connection = getConnectionOrRetry()) {
-            try (final Statement statement = connection.createStatement()) {
-                String sql = String.format("INSERT INTO LOCATION (NAME,QR_CODE_PATH)" +
-                        " VALUES ('%s', '%s');", name, "dummy"); // TODO use actual url
-                successful = statement.execute(sql);
+            try (final PreparedStatement statement = connection.prepareStatement(
+                    String.format("INSERT INTO LOCATION (NAME,QR_CODE_PATH)" +
+                            " VALUES ('%s', '%s');", name, "dummy" // TODO Use actual url
+            ))) {
+                successful = statement.execute();
             }
             try (final PreparedStatement stmt = connection.prepareStatement(LAST_INSERT_ROWID)) {
                 try (final ResultSet rs = stmt.executeQuery()) {
@@ -113,12 +114,10 @@ public class Database {
     public static com.cerner.intern.traqr.core.Connection insertConnection(String description, Location start, Location end, Duration estimatedTime) throws SQLException {
         boolean successful = false;
         try (final Connection sqlConnection = getConnectionOrRetry()) {
-            try (final Statement statement = sqlConnection.createStatement()) {
-                String sql = String.format("INSERT INTO CONNECTION (PREV,NEXT,DESCRIPTION,DURATION)" +
-                                " VALUES (%d, %d, '%s', %d);", start.getId(), end.getId(),
-                        description, estimatedTime.toMillis());
-                System.out.println(sql);
-                successful = statement.execute(sql);
+            try (final PreparedStatement statement = sqlConnection.prepareStatement(String.format("INSERT INTO CONNECTION (PREV,NEXT,DESCRIPTION,DURATION)" +
+                            " VALUES (%d, %d, '%s', %d);", start.getId(), end.getId(),
+                    description, estimatedTime.toMillis()))) {
+                successful = statement.execute();
             }
             try (final PreparedStatement stmt = connection.prepareStatement(LAST_INSERT_ROWID)) {
                 try (final ResultSet rs = stmt.executeQuery()) {
@@ -185,8 +184,8 @@ public class Database {
     private static Map<Integer, Location> getLocationsByQuery(final String sql) throws SQLException {
         final Map<Integer, Location> locations = new HashMap<>();
         try (final Connection sqlConnection = getConnectionOrRetry()) {
-            try (final Statement statement = sqlConnection.createStatement()) {
-                try (final ResultSet rs = statement.executeQuery(sql)) {
+            try (final PreparedStatement statement = sqlConnection.prepareStatement(sql)) {
+                try (final ResultSet rs = statement.executeQuery()) {
                     while (rs.next()) {
                         final Integer id = rs.getInt(1);
                         final Location location = new Location(id, rs.getString(2));
@@ -201,8 +200,8 @@ public class Database {
     private static Map<Integer, com.cerner.intern.traqr.core.Connection> getConnectionsByQuery(final String sql, final Map<Integer, Location> locations) throws SQLException {
         final HashMap<Integer, com.cerner.intern.traqr.core.Connection> connections = new HashMap<>();
         try (final Connection sqlConnection = getConnectionOrRetry()) {
-            try (final Statement statement = sqlConnection.createStatement()) {
-                try (final ResultSet rs = statement.executeQuery(sql)) {
+            try (final PreparedStatement statement = sqlConnection.prepareStatement(sql)) {
+                try (final ResultSet rs = statement.executeQuery()) {
                     while (rs.next()) {
                         final int prev = rs.getInt(1);
                         final int next = rs.getInt(2);
