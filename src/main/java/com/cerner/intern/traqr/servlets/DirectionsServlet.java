@@ -15,9 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created on 7/15/15.
@@ -32,9 +30,11 @@ public class DirectionsServlet extends HttpServlet{
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int fromId = Integer.parseInt(request.getParameter("from"));
 
-        if (request.getParameter("to") != null) {
+
+
+        if (request.getParameter("to") != null) { //full trip
+            int fromId = Integer.parseInt(request.getParameter("from"));
             int toId = Integer.parseInt(request.getParameter("to"));
             Location tripStart = locations.get(fromId);
             Location tripEnd = locations.get(toId);
@@ -45,9 +45,22 @@ public class DirectionsServlet extends HttpServlet{
                 throw new RuntimeException(e);
             }
 
-        } else {
-            //TODO: give list of choices instead
-            response.getWriter().write("<h1>JUST FROM:" + fromId);
+        }
+
+        else if (request.getParameter("from") != null) {
+            int fromId = Integer.parseInt(request.getParameter("from"));
+            Location start = locations.get(fromId);
+            try {
+                List<Location> locationsWithoutStart = new ArrayList<>(locations.values());
+                locationsWithoutStart.remove(start);
+                processFromOnly(response.getWriter(), start, locationsWithoutStart);
+            } catch (TemplateException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        else {
+            throw new UnsupportedOperationException("NO from or to!");
         }
 
     }
@@ -75,6 +88,25 @@ public class DirectionsServlet extends HttpServlet{
 
         Template template = config.getTemplate("directions.ftl");
 
+        template.process(root, out);
+    }
+
+    public static void processFromOnly(Writer out, Location start, List<Location> locationsWithoutStart) throws IOException, TemplateException {
+        Configuration config = new Configuration(Configuration.VERSION_2_3_22);
+        config.setDirectoryForTemplateLoading(new File("/Users/ms035644/Documents/traqr/src/main/resources/"));
+        config.setDefaultEncoding("UTF-8");
+        config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+
+        Map<String, Object> root = new HashMap<>();
+        root.put("tripStart", start);
+
+        root.put("locationsWithoutStart", locationsWithoutStart);
+
+        config.setDirectoryForTemplateLoading(new File("/Users/ms035644/Documents/traqr/src/main/resources/"));
+        config.setDefaultEncoding("UTF-8") ;
+        config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+
+        Template template = config.getTemplate("fromOnly.ftl");
         template.process(root, out);
     }
 
