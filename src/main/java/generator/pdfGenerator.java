@@ -33,10 +33,10 @@ public class pdfGenerator {
 		document.addPage(page);
 
 		// Text:
-		TextObject line1 = new TextObject("Need some directions?", page, PDType1Font.HELVETICA_BOLD_OBLIQUE, 42);
-		TextObject line2 = new TextObject("Just ask the new interns!", page, PDType1Font.HELVETICA_BOLD, 50);
+		TextObject line1 = new TextObject("Need directions?", page, PDType1Font.HELVETICA_BOLD, 50);
+		TextObject line2 = new TextObject("Scan this!", page, PDType1Font.HELVETICA_BOLD, 42);
 
-		TextObject line3 = new TextObject("You are at: " + locationName, page, PDType1Font.HELVETICA_BOLD_OBLIQUE, 22);
+		TextObject line3 = new TextObject("Your current location is: " + locationName, page, PDType1Font.HELVETICA_BOLD_OBLIQUE, 22);
 
 		TextObject line4 = new TextObject("TraQR (A project of #CernerHackfest2015)", page,
 				PDType1Font.HELVETICA_BOLD_OBLIQUE, 22);

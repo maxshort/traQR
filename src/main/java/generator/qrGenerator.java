@@ -18,7 +18,7 @@ public class qrGenerator {
 	public final static String IMAGE_FORMAT = "JPG";
 
 	private static final BarcodeFormat DEFAULT_BARCODE = BarcodeFormat.QR_CODE;
-	private final static String BASE_URL = "http://servername/?=";
+	private final static String BASE_URL = "https://traqr-docspock.c9.io/directions?fromLocation=";
 	private final static int width = 300;
 	private final static int height = 300;
 
@@ -40,7 +40,7 @@ public class qrGenerator {
 
 		String idString = Integer.toString(locationID);
 
-		String contents = BASE_URL + "\"" + idString + "\"";
+		String contents = BASE_URL + idString;
 		String outFileString = OUTPUT_FOLDER + File.separator + idString + "." + IMAGE_FORMAT.toLowerCase();
 
 		BitMatrix matrix = new MultiFormatWriter().encode(contents, DEFAULT_BARCODE, width, height);
