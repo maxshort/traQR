@@ -5,8 +5,8 @@
     <h1>Select Destination</h1>
 
     <form action = "/directions">
-        <input type="hidden" name="from" value="${tripStart.id}">
-        <select name ="to">
+        <input type="hidden" name="fromLocation" value="${tripStart.id}">
+        <select name ="toLocation">
             <#list locationsWithoutStart as location>
                 <option value=${location.id}>${location.name}</option>
             </#list>
