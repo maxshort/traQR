@@ -4,10 +4,8 @@ import com.cerner.intern.traqr.core.Connection;
 import com.cerner.intern.traqr.core.Location;
 import com.cerner.intern.traqr.db.Database;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
+import freemarker.core.ParseException;
+import freemarker.template.*;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +59,7 @@ public class UploadConnectionServlet extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         System.out.println("PARAMETERS: "+request.getParameterMap());
         int fromLocationId = Integer.parseInt(request.getParameter("fromLocation"));
@@ -76,6 +74,24 @@ public class UploadConnectionServlet extends HttpServlet {
             Connection connection = Database.insertConnection(description, start, end, durationInMinutes);
             start.connections.add(connection);
             connections.put(connection.getId(), connection);
+            Configuration config = new Configuration(Configuration.VERSION_2_3_22);
+
+            //Code for grabbing template from stream
+            config.setClassForTemplateLoading(this.getClass(), "/");
+            config.setDefaultEncoding("UTF-8");
+            config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+
+            Template template = config.getTemplate("connectionSuccess.ftl");
+
+            Map<String, Object> root = new HashMap<>();
+            root.put("connection", connection);
+            try {
+                template.process(root, response.getWriter());
+            } catch (TemplateException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

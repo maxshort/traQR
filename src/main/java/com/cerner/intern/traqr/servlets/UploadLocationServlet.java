@@ -64,7 +64,23 @@ public class UploadLocationServlet extends HttpServlet {
 		try {
 			Location l = Database.insertLocation(name);
 			locations.put(l.getId(), l);
-			System.out.println(l);
+			Configuration config = new Configuration(Configuration.VERSION_2_3_22);
+
+			// Code for grabbing template from stream
+			config.setClassForTemplateLoading(this.getClass(), "/");
+			config.setDefaultEncoding("UTF-8");
+			config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+
+			Template template = config.getTemplate("locationSuccess.ftl");
+			Map<String, Object> root = new HashMap<>();
+			root.put("location", l);
+			try {
+				template.process(root, response.getWriter());
+			} catch (TemplateException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
