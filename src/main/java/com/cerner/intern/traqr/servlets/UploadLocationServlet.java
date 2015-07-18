@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.cerner.intern.traqr.core.Location;
 import com.cerner.intern.traqr.db.Database;
 
+import com.cerner.intern.traqr.util.CustomConfigs;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -33,12 +34,7 @@ public class UploadLocationServlet extends HttpServlet {
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-
-		// Code for grabbing template from stream
-		config.setClassForTemplateLoading(this.getClass(), "/");
-		config.setDefaultEncoding("UTF-8");
-		config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+		Configuration config = CustomConfigs.XSS_SAFE_CONFIG;
 
 		Template template = config.getTemplate("addLocation.ftl");
 
@@ -64,12 +60,7 @@ public class UploadLocationServlet extends HttpServlet {
 		try {
 			Location l = Database.insertLocation(name);
 			locations.put(l.getId(), l);
-			Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-
-			// Code for grabbing template from stream
-			config.setClassForTemplateLoading(this.getClass(), "/");
-			config.setDefaultEncoding("UTF-8");
-			config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+			Configuration config = CustomConfigs.XSS_SAFE_CONFIG;
 
 			Template template = config.getTemplate("locationSuccess.ftl");
 			Map<String, Object> root = new HashMap<>();

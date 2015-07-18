@@ -16,6 +16,7 @@ import com.cerner.intern.traqr.core.Location;
 import com.cerner.intern.traqr.core.PathFinder;
 import com.cerner.intern.traqr.core.Trip;
 
+import com.cerner.intern.traqr.util.CustomConfigs;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -68,13 +69,9 @@ public class DirectionsServlet extends HttpServlet {
 	}
 
 	public void process(Writer out) throws IOException {
-		Configuration config = new Configuration(Configuration.VERSION_2_3_22);
+		Configuration config = CustomConfigs.XSS_SAFE_CONFIG;
 
 		// Code for grabbing template from stream
-		config.setClassForTemplateLoading(Main.class, "/");
-		config.setDefaultEncoding("UTF-8");
-		config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-
 		Template template = config.getTemplate("directionsLanding.ftl");
 
 		Map<String, Object> root = new HashMap<>();
@@ -90,10 +87,7 @@ public class DirectionsServlet extends HttpServlet {
 
 	public static void process(Writer out, Trip trip, Location start, Location end)
 			throws IOException, TemplateException {
-		Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-		config.setClassForTemplateLoading(Main.class, "/");
-		config.setDefaultEncoding("UTF-8");
-		config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+		Configuration config = CustomConfigs.XSS_SAFE_CONFIG;
 
 		Map<String, Object> root = new HashMap<>();
 		root.put("tripStart", start);
@@ -118,10 +112,7 @@ public class DirectionsServlet extends HttpServlet {
 
 	public static void processFromOnly(Writer out, Location start, List<Location> locationsWithoutStart)
 			throws IOException, TemplateException {
-		Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-		config.setClassForTemplateLoading(Main.class, "/");
-		config.setDefaultEncoding("UTF-8");
-		config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+		Configuration config = CustomConfigs.XSS_SAFE_CONFIG;
 
 		Map<String, Object> root = new HashMap<>();
 		root.put("tripStart", start);

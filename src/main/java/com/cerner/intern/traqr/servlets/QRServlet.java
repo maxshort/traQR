@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cerner.intern.traqr.util.CustomConfigs;
 import org.apache.pdfbox.io.IOUtils;
 
 import com.cerner.intern.traqr.core.Location;
@@ -46,12 +47,7 @@ public class QRServlet extends HttpServlet {
 			}
 			// TODO: PASS TO QR GENERATOR, GET BACK QR PAGE...
 		} else {
-			Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-
-			// Code for grabbing template from stream
-			config.setClassForTemplateLoading(this.getClass(), "/");
-			config.setDefaultEncoding("UTF-8");
-			config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+			Configuration config = CustomConfigs.XSS_SAFE_CONFIG;
 
 			Template template = config.getTemplate("allLocations.ftl");
 

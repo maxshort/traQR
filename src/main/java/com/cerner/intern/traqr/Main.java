@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cerner.intern.traqr.util.CustomConfigs;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -73,12 +74,9 @@ public class Main {
 			httpServletResponse.setContentType("text/html;charset=utf-8");
 			httpServletResponse.setStatus(HttpServletResponse.SC_OK);
 
-			Configuration config = new Configuration(Configuration.VERSION_2_3_22);
+			Configuration config = CustomConfigs.XSS_SAFE_CONFIG;
 
 			// Code for grabbing template from stream
-			config.setClassForTemplateLoading(this.getClass(), "/");
-			config.setDefaultEncoding("UTF-8");
-			config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
 			Template template = config.getTemplate("home.ftl");
 			Map<String, Object> input = new HashMap<String, Object>();

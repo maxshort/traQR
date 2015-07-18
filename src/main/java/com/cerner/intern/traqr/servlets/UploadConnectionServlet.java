@@ -4,6 +4,7 @@ import com.cerner.intern.traqr.core.Connection;
 import com.cerner.intern.traqr.core.Location;
 import com.cerner.intern.traqr.db.Database;
 
+import com.cerner.intern.traqr.util.CustomConfigs;
 import freemarker.core.ParseException;
 import freemarker.template.*;
 
@@ -37,12 +38,7 @@ public class UploadConnectionServlet extends HttpServlet {
     
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
-    	Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-    	
-    	//Code for grabbing template from stream
-        config.setClassForTemplateLoading(this.getClass(), "/");
-    	config.setDefaultEncoding("UTF-8");
-        config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+    	Configuration config = CustomConfigs.XSS_SAFE_CONFIG;
         
         Template template = config.getTemplate("addConnection.ftl");
         
@@ -74,12 +70,7 @@ public class UploadConnectionServlet extends HttpServlet {
             Connection connection = Database.insertConnection(description, start, end, durationInMinutes);
             start.connections.add(connection);
             connections.put(connection.getId(), connection);
-            Configuration config = new Configuration(Configuration.VERSION_2_3_22);
-
-            //Code for grabbing template from stream
-            config.setClassForTemplateLoading(this.getClass(), "/");
-            config.setDefaultEncoding("UTF-8");
-            config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+            Configuration config = CustomConfigs.XSS_SAFE_CONFIG;
 
             Template template = config.getTemplate("connectionSuccess.ftl");
 
