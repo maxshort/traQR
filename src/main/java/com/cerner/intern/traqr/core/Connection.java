@@ -41,6 +41,16 @@ public class Connection {
         return estimatedTime;
     }
 
+    public String getNiceDuration() {
+        if (estimatedTime.toHours() >0) {
+            return estimatedTime.toHours() + " hours, " + (estimatedTime.toMinutes()-estimatedTime.toHours()*60) + " minutes";
+        }
+        else
+        {
+            return estimatedTime.toMinutes() + " minutes";
+        }
+    }
+
     public String toString() {
         return "CONNECTION {"+"Start: " + start + "end: " +end +"}-DURATION:"+estimatedTime;
     }

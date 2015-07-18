@@ -34,6 +34,17 @@ public class Trip {
         return estimatedDuration.get();
     }
 
+    public String getNiceDuration() {
+        Duration estimatedTime = getEstimatedTime();
+        if (estimatedTime.toHours() >0) {
+            return estimatedTime.toHours() + " hours, " + (estimatedTime.toMinutes()-estimatedTime.toHours()*60) + " minutes";
+        }
+        else
+        {
+            return estimatedTime.toMinutes() + " minutes";
+        }
+    }
+
     public String toString() {
         return connectionList.toString() + "COST: "+getEstimatedTime();
     }

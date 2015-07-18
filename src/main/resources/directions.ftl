@@ -17,16 +17,16 @@
             <td>${Connection.start.name}</td>
             <td>${Connection.end.name}</td>
             <td>${Connection.description}</td>
-            <td>${Connection.estimatedTime}</td>
+            <td>${Connection.niceDuration}</td>
         </tr>
     <#else>
         No Directions Available.
 
     </#list>
 
-
-
 </table>
+
+<h5>Total estimated time:${trip.niceDuration}</h5>
 
 </body>
 
