@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
@@ -14,8 +13,6 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.xobject.PDJpeg;
 
 public class pdfGenerator {
-	private final static String OUTPUT_FOLDER = System.getProperty("java.io.tmpdir");
-
 	private pdfGenerator() {
 	}
 
@@ -25,7 +22,11 @@ public class pdfGenerator {
 	}
 
 	private File PDFgenerator(String locationName, int locationID) throws Exception {
-		String fileLocationString = qrGenerator.createQR(locationID).getAbsolutePath(); //OUTPUT_FOLDER + File.separator + Integer.toString(locationID);
+		String fileLocationString = qrGenerator.createQR(locationID).getAbsolutePath(); // OUTPUT_FOLDER
+																						// +
+																						// File.separator
+																						// +
+																						// Integer.toString(locationID);
 
 		PDDocument document = new PDDocument();
 		PDPage page = new PDPage(PDPage.PAGE_SIZE_LETTER);
@@ -36,7 +37,8 @@ public class pdfGenerator {
 		TextObject line1 = new TextObject("Need directions?", page, PDType1Font.HELVETICA_BOLD, 50);
 		TextObject line2 = new TextObject("Scan this!", page, PDType1Font.HELVETICA_BOLD, 42);
 
-		TextObject line3 = new TextObject("Your current location is: " + locationName, page, PDType1Font.HELVETICA_BOLD_OBLIQUE, 22);
+		TextObject line3 = new TextObject("Your current location is: " + locationName, page,
+				PDType1Font.HELVETICA_BOLD_OBLIQUE, 22);
 
 		TextObject line4 = new TextObject("TraQR (A project of #CernerHackfest2015)", page,
 				PDType1Font.HELVETICA_BOLD_OBLIQUE, 22);
@@ -61,7 +63,7 @@ public class pdfGenerator {
 		contentStream.drawImage(img, imgX, imgY);
 		contentStream.close();
 
-		File toSave = new File(fileLocationString.substring(0, fileLocationString.length()-4) + ".pdf");
+		File toSave = new File(fileLocationString.substring(0, fileLocationString.length() - 4) + ".pdf");
 		document.save(toSave);
 		return toSave;
 	}

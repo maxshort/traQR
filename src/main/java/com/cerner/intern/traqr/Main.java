@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cerner.intern.traqr.util.CustomConfigs;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -25,11 +24,11 @@ import com.cerner.intern.traqr.servlets.DirectionsServlet;
 import com.cerner.intern.traqr.servlets.QRServlet;
 import com.cerner.intern.traqr.servlets.UploadConnectionServlet;
 import com.cerner.intern.traqr.servlets.UploadLocationServlet;
+import com.cerner.intern.traqr.util.CustomConfigs;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
 
 /**
  * Created on 7/14/15.
@@ -67,6 +66,11 @@ public class Main {
 	}
 
 	public static class HelloServlet extends HttpServlet {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7836182019513680546L;
 
 		@Override
 		public void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)

@@ -11,22 +11,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cerner.intern.traqr.Main;
 import com.cerner.intern.traqr.core.Location;
 import com.cerner.intern.traqr.core.PathFinder;
 import com.cerner.intern.traqr.core.Trip;
-
 import com.cerner.intern.traqr.util.CustomConfigs;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
 
 /**
  * Created on 7/15/15.
  */
 public class DirectionsServlet extends HttpServlet {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4978910270722575160L;
 	private Map<Integer, Location> locations;
 
 	public DirectionsServlet(Map<Integer, Location> locations) {
@@ -71,7 +73,6 @@ public class DirectionsServlet extends HttpServlet {
 	public void process(Writer out) throws IOException {
 		Configuration config = CustomConfigs.XSS_SAFE_CONFIG;
 
-		// Code for grabbing template from stream
 		Template template = config.getTemplate("directionsLanding.ftl");
 
 		Map<String, Object> root = new HashMap<>();
