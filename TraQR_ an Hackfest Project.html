@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>TraQR: an Hackfest Project</title>
+	</head>
+	<style>
+body { padding: 0px;}
+HTML, BODY, FORM {
+
+    height: 100%;
+}
+		form {
+			clear: both;
+			float: left;
+			display: block;
+		}
+		label {
+			clear: both;
+			float: left;
+		}
+		select {
+			clear: both;
+			float: left;
+		}
+		input {
+			clear: both;
+			float: left;
+		}
+		textarea {
+			clear: both;
+			float: left;
+		}
+		.background {
+			display: block;
+			clear: both;
+			text-align: center;
+			width: 100%;
+			height: 100%;
+			background-color: #F1F1F1;
+			margin: 0px;
+			padding: 0px;
+		}
+		.span {
+			width: 700px;
+			height: 100%;
+			margin-left: auto;
+			margin-right: auto;
+			background-color: #D0E2FD
+		}
+	</style>
+	
+	<body>
+
+<div class="background">
+<div class="span">
+
+<a href="/qr/">List all locations</a>
+<a href="/locations/">Add a location</a>
+<a href="/connections/">Connect two locations</a>
+<a href="/directions/">Get directions</a>
+<br>		<form method="POST" action="/connections">
+			
+			
+			<label for="fromLocation">Start Point:</label>
+
+			<select name="fromLocation" id="fromLocation">
+					<option value="1">foobah</option>
+					<option value="2">borg</option>
+					<option value="3">banana</option>
+					<option value="4">Here</option>
+			</select>
+
+			<label for="toLocation">End Point:</label>
+
+			<select name="toLocation" id="toLocation">
+					<option value="1">foobah</option>
+					<option value="2">borg</option>
+					<option value="3">banana</option>
+					<option value="4">Here</option>
+			</select>
+			
+			<label for="minutes">Estimated walk-time in whole minutes:</label>
+		
+			<input name="minutes"  type="text" id="minutes" size="40" />
+
+
+	
+			<label for="description">Directions</label>
+		
+			<textarea name="description" cols="42" rows="10" id="description" ></textarea>
+		
+	
+	
+			<input  type="submit" value="Submit"/>
+				
+				
+			
+		</form>
+</div>
+</div>
+	</body>
+
+</html
