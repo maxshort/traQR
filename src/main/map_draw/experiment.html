@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="literallycanvas-0.4.3/css/literallycanvas.css" rel="stylesheet">
+		<script type="text/javascript" src="reactjs/reactwithaddons.js"></script>
+		<script type="text/javascript" src="literallycanvas-0.4.3/js/literallycanvas.js"></script>
+		<script type="text/javascript">
+			function submitCanvas(){
+				document.getElementById("canvasData").value = lc.getImage({scaleDownRetina:true, includeWatermark:false}).toDataURL("img/png");
+				
+			}
+		</script>
+		
+		<title>test</title>
+	</head>
+	<body>
+		<div class="literally without-jquery" style="height: 200px; width:500px"></div>
+		<script type="text/javascript">
+			var backgroundImage = new Image();
+			backgroundImage.src = 'XBackground.png';
+			var lc = LC.init(document.getElementsByClassName('literally without-jquery')[0], {imageSize: {width: 500, height: 200},
+																					imageURLPrefix:"literallycanvas-0.4.3/img",
+																					tools:[LC.tools.Pencil, LC.tools.Eraser, LC.tools.Line],
+																					backgroundColor:"transparent",
+																					watermarkImage:backgroundImage,
+																					primaryColor:"#000099"});
+																					
+			document.getElementsByClassName('lc-color-pickers')[0].style.display = "None"; //don't let them pick colors
+			//document.getElementsByClassName('lc-drawing')[0].style.backgroundImage="url('XBackground.png')";
+			function saveCanvas() {
+				document.write("<img src=\""+lc.getImage({scaleDownRetina:true, includeWatermark:false}).toDataURL("img/png")+"\">");
+			}
+			
+		</script>
+		<form id="imageForm" method="POST" action="http://127.0.0.1:30000" onsubmit="submitCanvas()">
+				<input type="submit" value="submitToServe"/>
+				<input type="hidden" name="canvasData" id="canvasData"/>
+		</form>
+		<!--<button onclick="javascript:saveCanvas()">Show picture</button> -->
+	</body>
+</html>

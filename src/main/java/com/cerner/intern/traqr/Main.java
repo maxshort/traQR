@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
@@ -29,6 +32,7 @@ import com.cerner.intern.traqr.util.CustomConfigs;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.eclipse.jetty.util.resource.Resource;
 
 /**
  * Created on 7/14/15.
@@ -46,21 +50,35 @@ public class Main {
 
 		ServletContextHandler context = new ServletContextHandler();
 		context.setContextPath("/");
-		server.setHandler(context);
+
+
+		/*ResourceHandler resourceHandler = new ResourceHandler();
+		resourceHandler.setBaseResource(Resource.newResource(Main.class.getResource("/rb").toExternalForm()));
+		resourceHandler.setDirectoriesListed(true);
+		handlerList.addHandler(resourceHandler);
+
+		server.setHandler(handlerList);*/
+
+		//context.setResourceBase("/Users/ms035644/Documents/traqr/src/resources/rb");
+
+		DefaultServlet defaultServlet = new DefaultServlet();
+		ServletHolder holder = new ServletHolder(defaultServlet);
+		holder.setInitParameter("resourceBase", Main.class.getResource("/static").toExternalForm());
+		context.addServlet(holder, "/*");
 
 		Map<Integer, Location> locations = Database.getAllLocationsById();
 		Map<Integer, Connection> connections = Database.getAllConnectionsById();
 
 		GraphBuilder.buildGraph(locations, connections);
 
-		context.addServlet(new ServletHolder(new HelloServlet()), "/*");
+		//context.addServlet(new ServletHolder(new HelloServlet()), "/*");
 		context.addServlet(new ServletHolder(new DirectionsServlet(locations)), "/directions/*");
 		context.addServlet(new ServletHolder(new QRServlet(locations)), "/qr/*");
 		context.addServlet(new ServletHolder(new UploadConnectionServlet(locations, connections)), "/connections/*");
 		context.addServlet(new ServletHolder(new UploadLocationServlet(locations)), "/locations/*");
 
 		// contextHandler.server.setHandler(new HelloServlet());
-
+		server.setHandler(context);
 		server.start();
 		server.join();
 	}
