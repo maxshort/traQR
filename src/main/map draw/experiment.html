@@ -4,6 +4,13 @@
 		<link href="literallycanvas-0.4.3/css/literallycanvas.css" rel="stylesheet">
 		<script type="text/javascript" src="reactjs/reactwithaddons.js"></script>
 		<script type="text/javascript" src="literallycanvas-0.4.3/js/literallycanvas.js"></script>
+		<script type="text/javascript">
+			function submitCanvas(){
+				document.getElementById("canvasData").value = lc.getImage({scaleDownRetina:true, includeWatermark:false}).toDataURL("img/png");
+				
+			}
+		</script>
+		
 		<title>test</title>
 	</head>
 	<body>
@@ -23,7 +30,12 @@
 			function saveCanvas() {
 				document.write("<img src=\""+lc.getImage({scaleDownRetina:true, includeWatermark:false}).toDataURL("img/png")+"\">");
 			}
+			
 		</script>
-		<button onclick="javascript:saveCanvas()">Save</button> 
+		<form id="imageForm" method="POST" action="http://127.0.0.1:30000" onsubmit="submitCanvas()">
+				<input type="submit" value="submitToServe"/>
+				<input type="hidden" name="canvasData" id="canvasData"/>
+		</form>
+		<!--<button onclick="javascript:saveCanvas()">Show picture</button> -->
 	</body>
 </html>
