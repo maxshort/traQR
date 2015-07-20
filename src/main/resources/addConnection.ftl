@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta name=viewport content="width=device-width, initial-scale=1">
 		<link type="text/css" rel="stylesheet" href="/Content/style.css" media="all">
-		<title>TraQR: Add a Connection</title>
+		<title>TraQR: Add Connection</title>
 	</head>
 
 	
@@ -10,7 +11,8 @@
 		<div class="backgroundfade"></div>
 		<div class="wrap">
 			<br>
-			<h1>TraQR: Add a Connection</h1>
+			<a href="/"><img src="/Content/TraQR_logo.png" height=32></a>
+			<h1>Add Connection</h1>
 			<br>
 			
 			
@@ -44,7 +46,7 @@
 					<label for="minutes">Estimated walk-time in whole minutes:</label>
 					<br>
 				
-					<input name="minutes"  type="text" id="minutes" size="40" />
+					<input name="minutes"  type="text" id="minutes" size="34" />
 					<br>
 					<br>
 		
@@ -52,7 +54,7 @@
 					<label for="description">Directions</label>
 					<br>
 				
-					<textarea name="description" cols="42" rows="10" id="description" ></textarea>
+					<textarea name="description" cols="36" rows="10" id="description" ></textarea>
 					<br>
 			
 			

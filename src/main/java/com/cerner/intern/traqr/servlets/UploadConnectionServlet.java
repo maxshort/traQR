@@ -60,11 +60,24 @@ public class UploadConnectionServlet extends HttpServlet {
 		System.out.println("PARAMETERS: " + request.getParameterMap());
 		int fromLocationId = Integer.parseInt(request.getParameter("fromLocation"));
 		int toLocationId = Integer.parseInt(request.getParameter("toLocation"));
-		String description = request.getParameter("description"); // TODO: db
-																	// uses
-																	// prepared
-																	// statements?
-		Duration durationInMinutes = Duration.ofMinutes(Integer.parseInt(request.getParameter("minutes")));
+		String description = request.getParameter("description");
+
+		// Integer input sanitizing
+		String minutes = request.getParameter("minutes");
+		int mins = 0;
+		try {
+			mins = Integer.parseInt(minutes);
+		} catch (NumberFormatException nfe) {
+			for (Character c : minutes.toCharArray()) {
+				if (Character.isDigit(c)) {
+					mins = (mins * 10) + Character.getNumericValue(c);
+				} else {
+					break;
+				}
+			}
+		}
+
+		Duration durationInMinutes = Duration.ofMinutes(mins);
 
 		Location start = locations.get(fromLocationId);
 		Location end = locations.get(toLocationId);
