@@ -1,4 +1,4 @@
-package generator;
+package com.cerner.intern.traqr.generator;
 
 import java.io.File;
 import java.nio.file.Paths;

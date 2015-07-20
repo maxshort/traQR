@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
@@ -53,7 +54,13 @@ public class Main {
 
 		GraphBuilder.buildGraph(locations, connections);
 
-		context.addServlet(new ServletHolder(new HelloServlet()), "/*");
+		DefaultServlet defaultServlet = new DefaultServlet();
+		ServletHolder holderPwd = new ServletHolder("default", defaultServlet);
+		holderPwd.setInitParameter("resourceBase", "./src/main/resources/Static/");
+		context.addServlet(holderPwd, "/*");
+		// context.addServlet(InfoServiceSocketServlet.class, "/info");
+
+		// context.addServlet(new ServletHolder(new HelloServlet()), "/*");
 		context.addServlet(new ServletHolder(new DirectionsServlet(locations)), "/directions/*");
 		context.addServlet(new ServletHolder(new QRServlet(locations)), "/qr/*");
 		context.addServlet(new ServletHolder(new UploadConnectionServlet(locations, connections)), "/connections/*");
@@ -94,24 +101,6 @@ public class Main {
 			}
 		}
 
-	}
-
-	public static class Person {
-		private String name;
-		private int age;
-
-		public Person(String name, int age) {
-			this.name = name;
-			this.age = age;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public int getAge() {
-			return age;
-		}
 	}
 
 }

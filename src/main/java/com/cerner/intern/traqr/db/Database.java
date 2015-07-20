@@ -6,9 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -223,20 +221,6 @@ public class Database {
 
 	public static void main(String args[]) throws SQLException {
 		createTables();
-		System.out.println(insertLocation("foobah"));
-		System.out.println(insertLocation("borg"));
 
-		Collection<Location> locations = getAllLocationsById().values();
-		locations.forEach(aConsumer -> {
-			System.out.println(aConsumer.getId() + " " + aConsumer.getName());
-		});
-		Iterator<Location> iterator = locations.iterator();
-		System.out.println(
-				insertConnection("I'm a description.", iterator.next(), iterator.next(), Duration.ofMinutes(10)));
-		Collection<com.cerner.intern.traqr.core.Connection> connections = getAllConnectionsById().values();
-		connections.forEach(aConnection -> {
-			System.out.println(aConnection.getId() + " " + aConnection.getStart() + " " + aConnection.getEnd() + " "
-					+ aConnection.getDescription() + " " + aConnection.getEstimatedTime());
-		});
 	}
 }

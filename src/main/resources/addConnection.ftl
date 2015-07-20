@@ -1,38 +1,68 @@
-<#include "/header.ftl">
-		<form method="POST" action="/connections">
-			
-			
-			<label for="fromLocation">Start Point:</label>
-
-			<select name="fromLocation" id="fromLocation">
-				<#list locations as Location>
-					<option value="${Location.id}">${Location.name}</option>
-				</#list>
-			</select>
-
-			<label for="toLocation">End Point:</label>
-
-			<select name="toLocation" id="toLocation">
-				<#list locations as Location>
-					<option value="${Location.id}">${Location.name}</option>
-				</#list>
-			</select>
-			
-			<label for="minutes">Estimated walk-time in whole minutes:</label>
-		
-			<input name="minutes"  type="text" id="minutes" size="40" />
-
+<!DOCTYPE html>
+<html>
+	<head>
+		<link type="text/css" rel="stylesheet" href="/Content/style.css" media="all">
+		<title>TraQR: Add a Connection</title>
+	</head>
 
 	
-			<label for="description">Directions</label>
+	<body>
+		<div class="backgroundfade"></div>
+		<div class="wrap">
+			<br>
+			<h1>TraQR: Add a Connection</h1>
+			<br>
+			
+			
+			<#include "/menu.ftl">
+			
+			<div class="content">
+				<form method="POST" action="/connections">
+					
+					
+					<label for="fromLocation">Start Point:</label>
+					<br>
+					<select name="fromLocation" id="fromLocation">
+						<#list locations as Location>
+							<option value="${Location.id}">${Location.name}</option>
+						</#list>
+					</select>
+					<br>
+					<br>
+					
+					<label for="toLocation">End Point:</label>
+					<br>
 		
-			<textarea name="description" cols="42" rows="10" id="description" ></textarea>
-		
-	
-	
-			<input  type="submit" value="Submit"/>
+					<select name="toLocation" id="toLocation">
+						<#list locations as Location>
+							<option value="${Location.id}">${Location.name}</option>
+						</#list>
+					</select>
+					<br>
+					<br>
+					
+					<label for="minutes">Estimated walk-time in whole minutes:</label>
+					<br>
 				
-				
+					<input name="minutes"  type="text" id="minutes" size="40" />
+					<br>
+					<br>
+		
 			
-		</form>
-<#include "/footer.ftl">
+					<label for="description">Directions</label>
+					<br>
+				
+					<textarea name="description" cols="42" rows="10" id="description" ></textarea>
+					<br>
+			
+			
+					<input  type="submit" value="Submit"/>
+						
+						
+					
+				</form>
+
+			</div>
+		</div>
+	</body>
+</html>

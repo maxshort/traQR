@@ -13,12 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.pdfbox.io.IOUtils;
 
 import com.cerner.intern.traqr.core.Location;
+import com.cerner.intern.traqr.generator.pdfGenerator;
 import com.cerner.intern.traqr.util.CustomConfigs;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import generator.pdfGenerator;
 
 /**
  * Created on 7/15/15.

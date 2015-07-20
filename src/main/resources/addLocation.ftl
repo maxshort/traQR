@@ -1,21 +1,30 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Add a location</title>
+		<link type="text/css" rel="stylesheet" href="/Content/style.css" media="all">
+		<title>TraQR: Add a Location</title>
 	</head>
-	<style>
-		
-	</style>
+
 	
 	<body>
-		<#include "/menu.ftl">
-		<form method="POST" action="/locations">
-			<label for="name">What is the name of your location?</label>	
+		<div class="backgroundfade"></div>
+		<div class="wrap">
 			<br>
-			<br>	
-			<input name="name"  type="text" id="name" size="40" />
-			<input  type="submit" value="Submit"/>
-		</form>
+			<h1>TraQR: Add a Location</h1>
+			<br>
+			
+			
+			<#include "/menu.ftl">
+			
+			<div class="content">
+				<form method="POST" action="/locations">
+					<label for="name">What is the name of your location?</label>	
+					<br>
+					<br>	
+					<input name="name"  type="text" id="name" size="40" />
+					<input  type="submit" value="Submit"/>
+				</form>
+			</div>
+		</div>
 	</body>
-
-</html
+</html>

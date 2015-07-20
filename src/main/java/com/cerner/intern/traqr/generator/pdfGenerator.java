@@ -1,4 +1,4 @@
-package generator;
+package com.cerner.intern.traqr.generator;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,11 +22,7 @@ public class pdfGenerator {
 	}
 
 	private File PDFgenerator(String locationName, int locationID) throws Exception {
-		String fileLocationString = qrGenerator.createQR(locationID).getAbsolutePath(); // OUTPUT_FOLDER
-																						// +
-																						// File.separator
-																						// +
-																						// Integer.toString(locationID);
+		String fileLocationString = qrGenerator.createQR(locationID).getAbsolutePath();
 
 		PDDocument document = new PDDocument();
 		PDPage page = new PDPage(PDPage.PAGE_SIZE_LETTER);
