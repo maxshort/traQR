@@ -21,7 +21,7 @@
 				<h2>All locations:</h2>
 				
 				<#list locations as Location>
-					<a href="/qr/?location=${Location.id}"><p>${Location.name}</p></a>
+					<a href="/qr/location.pdf?location=${Location.id}"><p>${Location.name}</p></a>
 				</#list>
 			</div>
 		</div>
