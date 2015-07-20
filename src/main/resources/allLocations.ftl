@@ -24,7 +24,7 @@
 								${Location.id}
 							</td>
 							<td>
-								<a href="/qr/?location=${Location.id}">${Location.name}</a>
+								<a href="/qr/location.pdf?location=${Location.id}">${Location.name}</a>
 							</td>
 						</tr>
 					</#list>
