@@ -21,20 +21,25 @@
 					
 					
 					<label for="fromLocation">Start Point:</label>
+					<br>
 		
 					<select name="fromLocation" id="fromLocation">
 						<#list locations as Location>
 							<option value="${Location.id}">${Location.name}</option>
 						</#list>
 					</select>
+					<br>
+					<br>
 		
 					<label for="toLocation">End Point:</label>
+					<br>
 		
 					<select name="toLocation" id="toLocation">
 						<#list locations as Location>
 							<option value="${Location.id}">${Location.name}</option>
 						</#list>
 					</select>
+					<br>
 		
 					<input  type="submit" value="Submit"/>
 					
